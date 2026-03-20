@@ -24,10 +24,26 @@ for i in range(1, 13):
     numero = str(i).ljust(2)
     print(numero + " " + " ".join(ligne))
 
-def drone(a,b):
+def init_drones():
+    drones = []
+    for i in range(1,7):
+        print("coordonnées du drone D{i} : ")
+        a = int(input('ligne (1-12) : '))
+        b = int(input('colonne (1-12) : '))
+        drones.append({
+            "id":f"D{i}",
+            "pos":(a,b)
+            "batterie":20,
+            "activité":"actif",
+            "chargé":None
+        })
+
+
+def drone():
     print("COORDONNEES DU DRONE : ")
     a = int(input("Ligne : "))
     b = int(input("Colonne : "))
+
     donnees = charger_donnees()
     donnees["drone"] = {"ligne": a, "colonne": b}
     sauvegarder_donnees(donnees)
