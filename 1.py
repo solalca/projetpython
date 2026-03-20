@@ -32,19 +32,10 @@ def init_drones():
         b = int(input('colonne (1-12) : '))
         drones.append({
             "id":f"D{i}",
-            "pos":(a,b)
+            "pos":(a,b),
             "batterie":20,
             "activité":"actif",
             "chargé":None
         })
+    return(drones)
 
-
-def drone():
-    print("COORDONNEES DU DRONE : ")
-    a = int(input("Ligne : "))
-    b = int(input("Colonne : "))
-
-    donnees = charger_donnees()
-    donnees["drone"] = {"ligne": a, "colonne": b}
-    sauvegarder_donnees(donnees)
-    return(a,b)
