@@ -1,6 +1,7 @@
 import string
 import json
 import os
+import random
 
 #data
 datafile = "data.json"
@@ -16,26 +17,48 @@ def sauvegarder_donnees(donnees):
         json.dump(donnees, f, indent=4)
 
 # plateau
-header = "   " + " ".join(string.ascii_uppercase[:12])
-print(header)
+gridsize = 13
+for i in range(gridsize):
+    gridtab = []
+    for j in range(gridsize):
+        gridtab.append(".")
+    print(gridtab)
 
-for i in range(1, 13):
-    ligne = ["."] * 12
-    numero = str(i).ljust(2)
-    print(numero + " " + " ".join(ligne))
-
-def init_drones():
-    drones = []
-    for i in range(1,7):
-        print("coordonnées du drone D{i} : ")
-        a = int(input('ligne (1-12) : '))
-        b = int(input('colonne (1-12) : '))
-        drones.append({
-            "id":f"D{i}",
+def init_drone(a,b):
+    for i in range(6):
+        dronelist = []
+        a = int(input("Ligne du drone (1-12) : "))
+        b = int(input("Colonne du drone (1-12) : "))
+        drone = {
             "pos":(a,b),
-            "batterie":20,
-            "activité":"actif",
-            "chargé":None
-        })
-    return(drones)
+            "bat":20,
+            "status":False, #si status = false le drone pas capturé
+            "loaded":False
+        }
+        dronelist.append(drone)
+    return(dronelist)
 
+def init_tempete(a,b):
+    for i in range(4):
+        tempetelist = []
+        a = int(random.randint(1,12))
+        b = int(random.randint(1,12))
+        tempete = {
+            "pos":(a,b),
+            "onelement":False, #si la tempete est sur un survivant ou sur un drone
+        }
+        tempetelist.append(tempete)
+    return(tempetelist)
+
+def survivant(a,b):
+    for i in range(10):
+        survlist = []
+        a = int(random.randint(1,12))
+        b = int(random.randint(1,12))
+        surv = {
+            "pos":(a,b),
+            "carried":False,
+            "alive":True
+        }
+        survlist.append(surv)
+    return(survlist)
