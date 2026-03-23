@@ -17,6 +17,7 @@ def sauvegarder_donnees(donnees):
         json.dump(donnees, f, indent=4)
 
 # plateau
+letters = "ABCDEFGHIJKL"
 gridsize = 13
 for i in range(gridsize):
     gridtab = []
@@ -24,9 +25,17 @@ for i in range(gridsize):
         gridtab.append(".")
     print(gridtab)
 
+def grid_display(gridsize):
+    print("      " + "  ".join(letters))
+    print()
+    for i in range(gridsize):
+        content = " ".join(gridtab[i][j] for j in range(gridsize))
+        print(f"{i+1:3}   {content}")     
+
+
 def init_drone(a,b):
+    dronelist = []
     for i in range(6):
-        dronelist = []
         a = int(input("Ligne du drone (1-12) : "))
         b = int(input("Colonne du drone (1-12) : "))
         drone = {
@@ -39,8 +48,8 @@ def init_drone(a,b):
     return(dronelist)
 
 def init_tempete(a,b):
+    tempetelist = []
     for i in range(4):
-        tempetelist = []
         a = int(random.randint(1,12))
         b = int(random.randint(1,12))
         tempete = {
@@ -51,8 +60,8 @@ def init_tempete(a,b):
     return(tempetelist)
 
 def survivant(a,b):
+    survlist = []
     for i in range(10):
-        survlist = []
         a = int(random.randint(1,12))
         b = int(random.randint(1,12))
         surv = {
@@ -62,3 +71,4 @@ def survivant(a,b):
         }
         survlist.append(surv)
     return(survlist)
+
