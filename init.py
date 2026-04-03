@@ -1,4 +1,3 @@
-import string
 import json
 import os
 import random
@@ -39,6 +38,9 @@ def init_drone():
     for i in range(6):
         a = int(random.randint(1,12))
         b = int(random.randint(1,12))
+        while gridtab[a-1][b-1] != ".":
+            a = int(random.randint(1,12))
+            b = int(random.randint(1,12))
         drone = {
             "pos":(a,b),
             "bat":20,
@@ -54,6 +56,9 @@ def init_tempete():
     for i in range(4):
         a = int(random.randint(1,12))
         b = int(random.randint(1,12))
+        while gridtab[a-1][b-1] != ".":
+            a = int(random.randint(1,12))
+            b = int(random.randint(1,12))
         tempete = {
             "pos":(a,b),
             "onelement":False, #si la tempete est sur un survivant ou sur un drone
@@ -68,6 +73,9 @@ def init_survivant():
     for i in range(10):
         a = int(random.randint(1,12))
         b = int(random.randint(1,12))
+        while gridtab[a-1][b-1] != ".":
+            a = int(random.randint(1,12))
+            b = int(random.randint(1,12))
         surv = {
             "pos":(a,b),
             "carried":False,
@@ -77,9 +85,12 @@ def init_survivant():
         survlist.append(surv)
     return(survlist)
 
-def hopital():
+def hospital():
     a = int(random.randint(1,12))
     b = int(random.randint(1,12))
+    while gridtab[a-1][b-1] != ".":
+            a = int(random.randint(1,12))
+            b = int(random.randint(1,12))
     hosto = {
         "pos":(a,b),
         "occupants":0,
@@ -87,20 +98,9 @@ def hopital():
     gridtab[a-1][b-1] = "H"
     return(hosto)
 
-def free_case():
-    isfree = True
-    for i in range(12):
-        for j in range(12):
-            if gridtab[i][j] != ".":
-                isfree = False
-            print(isfree)
-    return(isfree)
-
-free_case()
-
 #sepadelia
 
-hopital()
+hospital()
 init_tempete()
 init_drone()
 init_survivant()
