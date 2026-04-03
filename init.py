@@ -88,9 +88,15 @@ def hopital():
     return(hosto)
 
 def free_case():
-    isfree = False
-    
+    isfree = True
+    for i in range(12):
+        for j in range(12):
+            if gridtab[i][j] != ".":
+                isfree = False
+            print(isfree)
     return(isfree)
+
+free_case()
 
 #sepadelia
 
