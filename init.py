@@ -51,24 +51,24 @@ def init_drone():
         dronelist.append(drone)
     return(dronelist)
 
-def init_tempete():
-    tempetelist = []
+def init_storm():
+    stormlist = []
     for i in range(4):
         a = int(random.randint(1,12))
         b = int(random.randint(1,12))
         while gridtab[a-1][b-1] != ".":
             a = int(random.randint(1,12))
             b = int(random.randint(1,12))
-        tempete = {
+        storm = {
             "pos":(a,b),
             "onelement":False, #si la tempete est sur un survivant ou sur un drone
         }
         gridtab[a-1][b-1] = "T"
-        tempetelist.append(tempete)
+        stormlist.append(storm)
         
-    return(tempetelist)
+    return(stormlist)
 
-def init_survivant():
+def init_survivor():
     survlist = []
     for i in range(10):
         a = int(random.randint(1,12))
@@ -76,13 +76,13 @@ def init_survivant():
         while gridtab[a-1][b-1] != ".":
             a = int(random.randint(1,12))
             b = int(random.randint(1,12))
-        surv = {
+        survivor = {
             "pos":(a,b),
             "carried":False,
             "alive":True
         }
         gridtab[a-1][b-1] = "S"
-        survlist.append(surv)
+        survlist.append(survivor)
     return(survlist)
 
 def hospital():
@@ -101,7 +101,7 @@ def hospital():
 #sepadelia
 
 hospital()
-init_tempete()
+init_storm()
 init_drone()
-init_survivant()
+init_survivor()
 grid_display(gridtab)
