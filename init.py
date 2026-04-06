@@ -100,8 +100,29 @@ def hospital():
 
 #sepadelia
 
-hospital()
-init_storm()
-init_drone()
-init_survivor()
+hosto = hospital()
+storms = init_storm()
+drones = init_drone()
+survivors = init_survivor()
 grid_display(gridtab)
+
+for drone in drones:
+    drone["pos"] = list(drone["pos"])
+
+for storm in storms:
+    storm["pos"] = list(storm["pos"])
+
+for survivor in survivors:
+    survivor["pos"] = list(survivor["pos"])
+
+hosto["pos"] = list(hosto["pos"])
+
+donnees = {
+    "hospital": hosto,
+    "storms": storms,
+    "drones": drones,
+    "survivors": survivors,
+    "grid": gridtab
+}
+
+sauvegarder_donnees(donnees)
