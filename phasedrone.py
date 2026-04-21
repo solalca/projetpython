@@ -3,7 +3,7 @@ import os
 from init import charger_donnees, sauvegarder_donnees, datafile, letters, gridtab
 
 def convert_letters(letters):
-    return [ord(letter) - 64 for letter in letters] #ord => convertit la lettre en son emplacement ascii
+    return [ord(letter) - 64 for letter in letters]
 
 convert_letters(letters)
 
@@ -11,7 +11,7 @@ convert_letters(letters)
 def droneplay():
     for i in range(3):
         selected_drone = int(input("Sélectionnez la position du drone que vous déplacez : "))
-        if gridtab[i][j] == D:
+        if gridtab[i][j] == ".":
             #logique de placement
             pass
         else:

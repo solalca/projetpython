@@ -1,1 +1,0 @@
-# config joueur drones a venir
