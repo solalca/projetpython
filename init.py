@@ -125,4 +125,9 @@ donnees = {
     "grid": gridtab
 }
 
+if gridtab[1][1] == ".":
+    print("libre")
+else:
+    print("occupé")
+
 sauvegarder_donnees(donnees)
