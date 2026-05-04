@@ -34,7 +34,7 @@ def convert_position(userinput):
         return(int(lin), letters.index(col) + 1)
 
 def dronebatchecker(drone):
-    if drone["bat"] <= 0:
+    if drone["bat"] == 0:
         print("Le drone est à court de batterie et ne peut plus être déplacé.")
         return False
     return True
