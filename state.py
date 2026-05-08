@@ -1,54 +1,29 @@
 import json
 
-from gamerule import turn, free_case, convert_position, outofrange_move
-from init import gridtab, charger_donnees, sauvegarder_donnees, datafile, letters
-from phasedrone import drone_turnoff, dronechoice_count, dronemove, dronechoice, decrement_desactivation
-from phasetempete import apply_storm_effect, stormchoice, stormmove
+from gamerule import convert_position
+from init import gridtab, charger_donnees, sauvegarder_donnees, grid_display
+from phasedrone import dronechoice_count, decrement_desactivation
+from phasetempete import stormmove
 
-logfile = "data.json"
-resultfile = "result.json"
-
+resultfile = "resultats.json"
+LOG_FILE = "journal.json"
 journal = []
+
+def log(message):
+    print(message)
+    journal.append(message)
+    with open(LOG_FILE, "w", encoding="utf-8") as f:
+        json.dump({"journal": journal}, f, indent=4, ensure_ascii=False)
 
 def show_state(turncount):
     data = charger_donnees()
-    score = data.get("score", {"drones": 0, "tempetes": 0})
-    print("\nEtat de la partie :")
-    print(f"Tour {turncount}")
-    print(f"Score - Drones: {score['drones']}, Tempêtes: {score['tempetes']}")
-    print("Tour numéro :", turncount)
-    for survivor in data.get("survivors", []):
-        if survivor["alive"] and not survivor["saved"]:
-            print(f"Survivant {survivor['id']} à la position {survivor['pos']}")
-
-def gameloop():
-    global journal
-    journal = []  # reset journal
-    turncount = 1
- 
-    while True:
-        show_state(turncount)
-        resultat = win_cond()
-        if resultat:
-            break
- 
-        if turncount % 2 == 1:
-            print(f"\n-- Phase Drones (tour {turncount}) --")
-            dronechoice_count()
-        else:
-            print(f"\n-- Phase Tempêtes (tour {turncount}) --")
-            stormmove()
-            apply_storm_effect()
- 
-        decrement_desactivation()
-        turncount += 1
- 
-    # fin de partie
-    donnees = charger_donnees()
-    score = donnees.get("score", 0)
-    print(f"=== FIN DE PARTIE === Vainqueur : {resultat} | Score final : {score}/10")
-    with open(resultfile, "w", encoding="utf-8") as f:
-        json.dump({"vainqueur": resultat, "score": score, "score_max": 10}, f, indent=4, ensure_ascii=False)
+    score = data.get("score", 0)
+    survivants_restants = sum(1 for s in data["survivants"] if s["alive"] and not s["saved"])
+    log(f"\n=== Tour {turncount} ===")
+    grid_display(gridtab)
+    log(f"Score : {score} | Survivants restants : {survivants_restants}")
+    for i, drone in enumerate(data["drones"]):
+        log(f"  D{i+1} pos={drone['pos']} batterie={drone['batterie']} état={drone['etat']} charge={drone['charge']}")
 
 def win_cond():
     donnees = charger_donnees()
@@ -59,6 +34,33 @@ def win_cond():
     if all_dead:
         return "tempetes"
     return None
+
+def gameloop():
+    global journal
+    journal = []
+    turncount = 1
+
+    while True:
+        show_state(turncount)
+        resultat = win_cond()
+        if resultat:
+            break
+
+        if turncount % 2 == 1:
+            log(f"\n-- Phase Drones (tour {turncount}) --")
+            dronechoice_count()
+        else:
+            log(f"\n-- Phase Tempêtes (tour {turncount}) --")
+            stormmove()
+
+        decrement_desactivation()
+        turncount += 1
+
+    donnees = charger_donnees()
+    score = donnees.get("score", 0)
+    log(f"=== FIN DE PARTIE === Vainqueur : {resultat} | Score final : {score}/10")
+    with open(resultfile, "w", encoding="utf-8") as f:
+        json.dump({"vainqueur": resultat, "score": score, "score_max": 10}, f, indent=4, ensure_ascii=False)
 
 if __name__ == "__main__":
     gameloop()

@@ -119,17 +119,14 @@ def buildings():
 hosto = hospital()
 storms = init_storm()
 drones = init_drone()
-survivors = init_survivor()
+survivants = init_survivor()
 buildingdisp = buildings()
 grid_display(gridtab)
-
-for drone in drones:
-    drone["pos"] = list(drone["pos"])
 
 for storm in storms:
     storm["pos"] = list(storm["pos"])
 
-for survivor in survivors:
+for survivor in survivants:
     survivor["pos"] = list(survivor["pos"])
 
 for building in buildingdisp:
@@ -137,14 +134,24 @@ for building in buildingdisp:
 
 hosto["pos"] = list(hosto["pos"])
 
+for drone in drones:
+    drone["batterie"] = drone.pop("bat")
+    drone["etat"] = "actif"
+    drone["charge"] = None
+    drone["tours_desactive"] = 0
+    drone.pop("status", None)
+    drone.pop("loaded", None)
+
 donnees = {
     "hospital": hosto,
     "storms": storms,
     "drones": drones,
-    "survivors": survivors,
+    "survivants": survivants,
     "buildings": buildingdisp,
-    "grid": gridtab
+    "grid": gridtab,
+    "score": 0
 }
+
 
 
 sauvegarder_donnees(donnees)

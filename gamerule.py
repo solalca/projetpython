@@ -34,8 +34,5 @@ def convert_position(userinput):
                 lin = input("Numéro de ligne invalide. Veuillez entrer un chiffre entre 1 et 12 : ").strip()
         return(int(lin), letters.index(col) + 1)
 
-def outofrange_move(element, move, initialpos):
-    if move == abs(element["pos"][0] - move[0]) + abs(element["pos"][1] - move[1]) > 1:
-        print("Déplacement hors de portée. Veuillez choisir une case adjacente.")
-        return True
-    return False
+def outofrange_move(from_pos, to_pos):
+    return abs(from_pos[0] - to_pos[0]) > 1 or abs(from_pos[1] - to_pos[1]) > 1
