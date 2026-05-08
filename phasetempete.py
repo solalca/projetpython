@@ -1,60 +1,64 @@
 import json
 import os
 from init import charger_donnees, sauvegarder_donnees, datafile, letters, gridtab
-from gamerule import turn, free_case, convert_position
+from gamerule import outofrange_move, turn, free_case, convert_position
 from phasedrone import drone_turnoff, dronemove
     
 
 def stormchoice():
-    picker = input("Quel drone voulez-vous déplacer ? (ex: A1) : ")
-    while convert_position(picker) is None:
-        picker = input("Position invalide. Veuillez entrer une lettre suivie d'un chiffre : ")
-    if gridtab[convert_position(picker)[0]-1][convert_position(picker)[1]-1] == 'D':
-        stormcheck = json.loads(charger_donnees())["tempetes"]
-        for storm in stormcheck:
-            return convert_position(picker)
-    else:
-        print("Pas de tempête à cette position, choisir une autre tempête.")
+    picker = input("Quelle tempête voulez-vous déplacer ? (ex: A1) : ")
+    pos = convert_position(picker)
+    if pos is None:
+        print("Position invalide.")
         return stormchoice()
-    return convert_position(picker)
+    r, c = pos[0]-1, pos[1]-1
+    if gridtab[r][c] != 'T':
+        print("Pas de tempête à cette position.")
+        return stormchoice()
+    donnees = charger_donnees()
+    for storm in donnees["storms"]:
+        if storm["pos"] == list(pos):
+            return pos
+    print("Tempête introuvable.")
+    return stormchoice()
 
 def stormmove():
-    move = input("Où voulez-vous déplacer la tempête ? (ex: A1) : ")
-    while convert_position(move) is None:
-        move = input("Position invalide. Veuillez entrer une lettre suivie d'un chiffre : ")
-    chosenstorm = stormchoice()
-    if free_case(convert_position(move)) == False:
-        print("Case déjà occupée, choisissez une autre case.")
-        return stormmove()
-    else:
-        stormcheck = json.loads(charger_donnees())["tempetes"]
-        for storm in stormcheck:
-            if chosenstorm == storm["pos"]:
-                gridtab[chosenstorm[0]-1][chosenstorm[1]-1] = "."
-                storm["pos"] = convert_position(move)
-                sauvegarder_donnees(json.dumps({"tempetes": stormcheck}, indent=4))
-                gridtab[convert_position(move)[0]-1][convert_position(move)[1]-1] = "D"
-    return convert_position(move)
+    for i in range(2):
+        print(f"Tempête {i+1}/2")
+        chosenst = stormchoice()
+        move = input("Où voulez-vous déplacer la tempête ? (ex: B3) : ")
+        pos = convert_position(move)
+        if pos is None or outofrange_move(chosenst, pos):
+            print("Position invalide ou hors de portée, tempête ignorée.")
+            continue
+        r, c = pos[0]-1, pos[1]-1
+        if gridtab[r][c] == "B":
+            print("Case bloquée, tempête ignorée.")
+            continue
+ 
+        donnees = charger_donnees()
+        for storm in donnees["storms"]:
+            if storm["pos"] == list(chosenst):
+                gridtab[chosenst[0]-1][chosenst[1]-1] = "."
+                storm["pos"] = list(pos)
+                gridtab[r][c] = "T"
+                apply_storm_effect(pos, donnees)
+                break
+        sauvegarder_donnees(donnees)
 
-def storm_effect():
-    stormcheck = json.loads(charger_donnees())["tempetes"]
-    for storm in stormcheck:
-        if gridtab[storm["pos"][0]-1][storm["pos"][1]-1] == "D":
-            storm["onelement"] = True
-            drone_turnoff() = True
-            sauvegarder_donnees(json.dumps({"tempetes": stormcheck}, indent=4))
-        else:
-            storm["onelement"] = False
-            sauvegarder_donnees(json.dumps({"tempetes": stormcheck}, indent=4))
-        if gridtab[storm["pos"][0]-1][storm["pos"][1]-1] == "S":
-            storm["onelement"] = True
-            survcheck = json.loads(charger_donnees())["survivors"]
-            for survivor in survcheck:
-                if survivor["pos"] == storm["pos"]:
-                    survivor["alive"] = False
-                    survcheck.remove(survivor)
-                    sauvegarder_donnees(json.dumps({"survivors": survcheck}, indent=4))
-                    print("Un survivant a été tué par la tempête !")
-        else:
-            storm["onelement"] = False
-            sauvegarder_donnees(json.dumps({"tempetes": stormcheck}, indent=4))
+def apply_storm_effect(pos, donnees):
+    r, c = pos[0]-1, pos[1]-1
+    cell = gridtab[r][c]
+    if cell == "D":
+        drone_turnoff(pos)
+        print(f"Collision ! Tempête en {pos} désactive un drone !")
+    if cell == "S":
+        for surv in donnees["survivants"]:
+            if surv["pos"] == list(pos) and surv["alive"]:
+                surv["alive"] = False
+                gridtab[r][c] = "."
+                print("Un survivant a été tué par la tempête !")
+                break
+    sauvegarder_donnees(donnees)
+
+
