@@ -1,5 +1,6 @@
 import json
 import os
+from shutil import move
 from init import gridtab, charger_donnees, sauvegarder_donnees, letters
 
 def turn():
@@ -33,8 +34,8 @@ def convert_position(userinput):
                 lin = input("Numéro de ligne invalide. Veuillez entrer un chiffre entre 1 et 12 : ").strip()
         return(int(lin), letters.index(col) + 1)
 
-def dronebatchecker(drone):
-    if drone["bat"] == 0:
-        print("Le drone est à court de batterie et ne peut plus être déplacé.")
-        return False
-    return True
+def outofrange_move(element, move, initialpos):
+    if move == abs(element["pos"][0] - move[0]) + abs(element["pos"][1] - move[1]) > 1:
+        print("Déplacement hors de portée. Veuillez choisir une case adjacente.")
+        return True
+    return False

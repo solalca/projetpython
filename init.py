@@ -79,7 +79,8 @@ def init_survivor():
         survivor = {
             "pos":(a,b),
             "carried":False,
-            "alive":True
+            "alive":True,
+            "saved":False
         }
         gridtab[a-1][b-1] = "S"
         survlist.append(survivor)
@@ -98,12 +99,28 @@ def hospital():
     gridtab[a-1][b-1] = "H"
     return(hosto)
 
+def buildings():
+    buildinglist = []
+    for i in range(9):
+        a = int(random.randint(1,12))
+        b = int(random.randint(1,12))
+        while gridtab[a-1][b-1] != ".":
+                a = int(random.randint(1,12))
+                b = int(random.randint(1,12))
+        buildingspecs = {
+            "pos":(a,b),
+        }
+        gridtab[a-1][b-1] = "B"
+        buildinglist.append(buildingspecs)
+    return(buildinglist)
+
 #sepadelia
 
 hosto = hospital()
 storms = init_storm()
 drones = init_drone()
 survivors = init_survivor()
+buildingdisp = buildings()
 grid_display(gridtab)
 
 for drone in drones:
@@ -115,6 +132,9 @@ for storm in storms:
 for survivor in survivors:
     survivor["pos"] = list(survivor["pos"])
 
+for building in buildingdisp:
+    building["pos"] = list(building["pos"])
+
 hosto["pos"] = list(hosto["pos"])
 
 donnees = {
@@ -122,6 +142,7 @@ donnees = {
     "storms": storms,
     "drones": drones,
     "survivors": survivors,
+    "buildings": buildingdisp,
     "grid": gridtab
 }
 
